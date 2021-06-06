@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节流</title>
+</head>
+
+<body>
+    <p>经过节流后，指定时间内触发多次事件实际只执行一次</p>
+    <script>
+        function coloring() {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function throttleByTimer(handler, delay) {
+            let timer;
+            return function () {
+                const context = this;
+                const args = arguments;
+                if (timer) {
+                    return;
+                } else {
+                    timer = setTimeout(function () {
+                        timer = null;
+                        handler.apply(context, args);
+                    }, delay);
+                }
+            }
+        }
+        function throttleByDate(handler, delay) {
+            let pre = 0;
+            return function () {
+                const context = this;
+                const args = arguments;
+                const now = Date.now();
+                if (now - pre > delay) {
+                    handler.apply(context, args);
+                    pre = now;
+                }
+            }
+        }
+        window.addEventListener('resize', throttleByDate(coloring, 2000));
+    </script>
+</body>
+
+</html>
